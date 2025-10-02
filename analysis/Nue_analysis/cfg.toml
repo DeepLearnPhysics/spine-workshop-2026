@@ -1,0 +1,91 @@
+
+[[this_includes]]
+file = '/sdf/data/neutrino/dcarber/spine_workshop/medulla/spineplot/configurations/common/variables_nue.toml'
+
+[[this_includes]]
+file = '/sdf/data/neutrino/dcarber/spine_workshop/medulla/spineplot/configurations/common/styles.toml'
+
+[samples]
+[samples.onbeam]
+key = "data"
+exposure_type = "pot"
+override_category = -100
+trees = ['selected',]
+presel = '((reco_leading_electron_axial_spread > -0.014) & (reco_leading_electron_directional_spread < 0.72) & (reco_leading_proton_proton_softmax > 0.36) & (reco_leading_proton_muon_softmax < 0.28) & (reco_leading_electron_vertex_distance < 8)) '
+
+[samples.mc_nu]
+key = "full"
+exposure_type = "pot"
+trees = ['selected']
+presel = '((reco_leading_electron_axial_spread > -0.014) & (reco_leading_electron_directional_spread < 0.72) & (reco_leading_proton_proton_softmax > 0.36) & (reco_leading_proton_muon_softmax < 0.28) & (reco_leading_electron_vertex_distance < 8)) '
+print_sys = true
+systematics = ['selected_variationTree','selected_multisimTree','selected_multisigmaTree','NuMIfluxsim']
+
+[[systematic_recipe]]
+name = 'flux'
+label = 'Flux Systematics'
+#pattern = '_Flux'
+pattern = 'hysyst*'
+
+#For BNB you can use this for flux systematics
+#[[systematic_recipe]]
+#name = 'flux'
+#label = 'Flux Systematics'
+#pattern = '_Flux'
+#pattern = '\b\w*_Flux\b'
+
+[[systematic_recipe]]
+name = 'xsec'
+label = 'Interaction Systematics'
+pattern = '\bGENIEReWeight_SBN_v1_multisigma_(?!\w*sigma\b)\w+\b'
+
+
+[[systematic_recipe]]
+name = 'detsys'
+label = 'Detector Systematics'
+pattern = '\bvar(00|01|02|03|04|05|06|07)\b'
+
+[[systematic_recipe]]
+name = 'stats'
+label = 'MC Statistical Uncertainty'
+pattern = '(mc_nu)_statistical'
+
+[[systematic_recipe]]
+name = 'MC_total'
+label = 'MC Uncertainty'
+#pattern = 'mc_statistical'
+#pattern = 'mc_nu_statistical'
+pattern = '(flux|xsec|stats|detsys)'
+
+[output]
+path = '~'
+
+[analysis]
+ordinate_sample = 'onbeam'
+category_branch = 'true_category'
+category_assignment = [[0,1], [2], [3],[4], [5],[6],[7],[-100]]
+category_labels = ['1eNp0$\pi$','OOFV', 'Other CC $\nu_e$', '$\nu_\mu$ CC', 'NC $\nu$','Cosmic','Other $\nu$','Data']
+category_colors = ['C0', 'C1', 'C3', 'C5', 'C6','C4','C7','black']
+category_types = ['histogram', 'histogram', 'histogram', 'histogram', 'histogram','histogram', 'histogram', 'scatter']
+
+[[figure]]
+name = 'reco_visible_energy'
+type = 'SimpleFigure'
+style = 'selected_icarus'
+[[figure.artists]]
+type = 'SpineSpectra1D'
+variable = 'reco_visible_energy'
+ytitle = 'Normalized Candidates'
+draw_kwargs = {'show_component_number' = false, 'show_component_percentage' = true, 'invert_stack_order' = true,'normalize' = true,draw_error = 'MC_total'}
+
+[[figure]]
+name = 'reco_leading_electron_ke'
+type = 'SimpleFigure'
+style = 'selected_icarus'
+[[figure.artists]]
+type = 'SpineSpectra1D'
+variable = 'reco_leading_electron_ke'
+ytitle = 'Candidates'
+draw_kwargs = {'show_component_number' = true, 'show_component_percentage' = true, 'invert_stack_order' = true, 'normalize' = false,draw_error = 'MC_total'}
+
+
