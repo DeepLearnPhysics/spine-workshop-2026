@@ -9,12 +9,17 @@ from array import array
 import ROOT, json
 from math import nan
 
-file_nu = uproot.open('icarus_numi_nue_mc_onbeam_offbeam_syst.root')
-file_flux = uproot.open('2025-04-08_out_450.37_7991.98_79512.66.root')
+
+#file_nu = input("Enter path to medulla file")
+#file_flux = input("Enter path to NuMI flux file")
+file_name = '/Users/danielcarber/Documents/ICARUS/icarus_numi_nue_mc_onbeam_offbeam_syst.root'
+horn_current = 'fhc'
+file_nu = uproot.open(file_name)
+file_flux = uproot.open('/Users/danielcarber/Documents/ICARUS/2025-04-08_out_450.37_7991.98_79512.66.root')
 
 
-flux_g4numi = file_flux['g4numi_reweight_v03_01-->v03_02;1/fhc;1']
-flux_beam_focus = file_flux['beam_focusing_uncertainties;1/fhc;1']
+flux_g4numi = file_flux[f'g4numi_reweight_v03_01-->v03_02;1/{horn_current};1']
+flux_beam_focus = file_flux[f'beam_focusing_uncertainties;1/{horn_current};1']
 flux_pca = file_flux['pca;1/principal_components;1']
 
 nu_df = file_nu['events/full/selected;1']
@@ -55,6 +60,37 @@ hpc_11 = []
 hpc_12 = []
 hpc_13 = []
 hpc_14 = []
+hysyst_beam_horn_2kA_sigma = []
+hysyst_beam_horn_m2kA_sigma = []
+hysyst_beam_horn1_x_3mm_sigma = []
+hysyst_beam_horn1_y_3mm_sigma = []
+hysyst_beam_spot_1_3mm_sigma = []
+hysyst_beam_spot_1_7mm_sigma = []
+hysyst_beam_horn2_x_3mm_sigma = []
+hysyst_beam_horn2_y_3mm_sigma = []
+hysyst_beam_horn2_y_3mm_sigma = []
+hysyst_beam_horns_0mm_water_sigma = []
+hysyst_beam_horns_2mm_water_sigma = []
+hysyst_beam_Beam_shift_x_1mm_sigma = []
+hysyst_beam_Beam_shift_y_1mm_sigma = []
+hysyst_beam_Beam_shift_y_1mm_sigma = []
+hysyst_beam_Target_z_7mm_sigma = []
+hysyst_beam_Target_z_7mm_sigma = []
+hpc_0_sigma = []
+hpc_1_sigma = []
+hpc_2_sigma = []
+hpc_3_sigma = []
+hpc_4_sigma = []
+hpc_5_sigma = []
+hpc_6_sigma = []
+hpc_7_sigma = []
+hpc_8_sigma = []
+hpc_9_sigma = []
+hpc_10_sigma = []
+hpc_11_sigma = []
+hpc_12_sigma = []
+hpc_13_sigma = []
+hpc_14_sigma = []
 hnom_k0l_weights = []
 hnom_kpm_weights = []
 hnom_pipm_weights = []
@@ -66,7 +102,7 @@ subrun = []
 sigma = np.array([3,2,1,0,-1,-2,-3])
 abs_sigma = np.array([3,2,1,0,1,2,3])
 
-for e,event in tqdm(nue_df.iterrows()):
+for e,event in tqdm(nu_df.iterrows()):
     run.append(event['Run'])
     subrun.append(event['Subrun'])
     events.append(event['Evt'])
@@ -135,156 +171,261 @@ for e,event in tqdm(nue_df.iterrows()):
         hnom_kpm_weights.append(float("nan"))
         hnom_k0l_weights.append(float("nan"))
     if int(pdg) ==12:
-        repeat+=1
-        hysyst_beam_horn_2kA.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn_p2kA_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn_p2kA_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn_2kA[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn_m2kA_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn_m2kA_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn1_x_p3mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_x_p3mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn1_x_m3mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_x_m3mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn1_y_p3mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_y_p3mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn1_y_m3mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_y_m3mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_spot_1_3mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Beam_spot_1_3mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_spot_1_3mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_spot_1_7mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Beam_spot_1_7mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_spot_1_7mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn2_x_p3mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_x_p3mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn2_x_m3mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_x_m3mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn2_y_p3mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_y_p3mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn2_y_m3mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_y_m3mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horns_0mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Horns_0mm_water_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horns_0mm_water_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horns_2mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Horns_2mm_water_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horns_2mm_water_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_x_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Beam_shift_x_p1mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_x_p1mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_x_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Beam_shift_x_m1mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_x_m1mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_y_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Beam_shift_y_p1mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_y_p1mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_y_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Beam_shift_y_m1mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_y_m1mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Target_z_7mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Target_z_p7mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Target_z_p7mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Target_z_7mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Target_z_m7mm_fhc_nue;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Target_z_m7mm_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_0.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_0_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_0_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_1.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_1_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_1_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_2.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_2_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_2_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_3.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_3_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_3_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_4.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_4_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_4_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_5.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_5_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_5_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_6.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_6_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_6_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_7.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_7_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_7_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_8.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_8_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_8_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_9.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_9_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_9_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_10.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_10_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_10_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_11.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_11_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_11_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_12.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_12_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_12_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_13.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_13_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_13_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        hpc_14.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_14_fhc_nue;1'].values()[np.searchsorted(flux_pca['hpc_14_fhc_nue;1'].axes[0].edges(),nu_e)-1])))
-        
+        hysyst_beam_horn_2kA.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn_p2kA_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn_p2kA_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn_2kA[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn_m2kA_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn_m2kA_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn_2kA_sigma.append(sigma)
+        hysyst_beam_horn1_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn1_x_p3mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_x_p3mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn1_x_m3mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_x_m3mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_x_3mm_sigma.append(sigma)
+        hysyst_beam_horn1_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn1_y_p3mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_y_p3mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn1_y_m3mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_y_m3mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_y_3mm_sigma.append(sigma)
+        hysyst_beam_spot_1_3mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Beam_spot_1_3mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_spot_1_3mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_spot_1_3mm_sigma.append(sigma)
+        hysyst_beam_spot_1_7mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Beam_spot_1_7mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_spot_1_7mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_spot_1_7mm_sigma.append(sigma)
+        hysyst_beam_horn2_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn2_x_p3mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_x_p3mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn2_x_m3mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_x_m3mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_x_3mm_sigma.append(sigma)
+        hysyst_beam_horn2_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn2_y_p3mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_y_p3mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn2_y_m3mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_y_m3mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_y_3mm_sigma.append(sigma)
+        hysyst_beam_horns_0mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Horns_0mm_water_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horns_0mm_water_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horns_0mm_water_sigma.append(sigma)
+        hysyst_beam_horns_2mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Horns_2mm_water_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horns_2mm_water_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horns_2mm_water_sigma.append(sigma)
+        hysyst_beam_Beam_shift_x_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Beam_shift_x_p1mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_x_p1mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_x_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Beam_shift_x_m1mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_x_m1mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_x_1mm_sigma.append(sigma)
+        hysyst_beam_Beam_shift_y_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Beam_shift_y_p1mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_y_p1mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_y_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Beam_shift_y_m1mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_y_m1mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_y_1mm_sigma.append(sigma)
+        hysyst_beam_Target_z_7mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Target_z_p7mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Target_z_p7mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Target_z_7mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Target_z_m7mm_{horn_current}_nue;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Target_z_m7mm_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Target_z_7mm_sigma.append(sigma)
+        hpc_0.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_0_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_0_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_0_sigma.append(sigma)
+        hpc_1.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_1_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_1_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_1_sigma.append(sigma)
+        hpc_2.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_2_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_2_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_2_sigma.append(sigma)
+        hpc_3.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_3_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_3_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_3_sigma.append(sigma)
+        hpc_4.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_4_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_4_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_4_sigma.append(sigma)
+        hpc_5.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_5_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_5_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_5_sigma.append(sigma)
+        hpc_6.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_6_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_6_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_6_sigma.append(sigma)
+        hpc_7.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_7_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_7_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_7_sigma.append(sigma)
+        hpc_8.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_8_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_8_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_8_sigma.append(sigma)
+        hpc_9.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_9_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_9_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_9_sigma.append(sigma)
+        hpc_10.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_10_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_10_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_10_sigma.append(sigma)
+        hpc_11.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_11_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_11_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_11_sigma.append(sigma)
+        hpc_12.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_12_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_12_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_12_sigma.append(sigma)
+        hpc_13.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_13_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_13_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_13_sigma.append(sigma)
+        hpc_14.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_14_{horn_current}_nue;1'].values()[np.searchsorted(flux_pca[f'hpc_14_{horn_current}_nue;1'].axes[0].edges(),nu_e)-1])))
+        hpc_14_sigma.append(sigma)
+
     elif int(pdg) == -12:
-        repeat+=1
-        hysyst_beam_horn_2kA.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn_p2kA_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn_p2kA_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn_2kA[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn_m2kA_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn_m2kA_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn1_x_p3mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_x_p3mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn1_x_m3mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_x_m3mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn1_y_p3mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_y_p3mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn1_y_m3mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_y_m3mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_spot_1_3mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Beam_spot_1_3mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_spot_1_3mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_spot_1_7mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Beam_spot_1_7mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_spot_1_7mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn2_x_p3mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_x_p3mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn2_x_m3mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_x_m3mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn2_y_p3mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_y_p3mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn2_y_m3mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_y_m3mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horns_0mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Horns_0mm_water_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horns_0mm_water_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horns_2mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Horns_2mm_water_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horns_2mm_water_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_x_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Beam_shift_x_p1mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_x_p1mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_x_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Beam_shift_x_m1mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_x_m1mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_y_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Beam_shift_y_p1mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_y_p1mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_y_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Beam_shift_y_m1mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_y_m1mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Target_z_7mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Target_z_p7mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Target_z_p7mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Target_z_7mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Target_z_m7mm_fhc_nuebar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Target_z_m7mm_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_0.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_0_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_0_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_1.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_1_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_1_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_2.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_2_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_2_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_3.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_3_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_3_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_4.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_4_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_4_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_5.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_5_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_5_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_6.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_6_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_6_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_7.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_7_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_7_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_8.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_8_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_8_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_9.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_9_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_9_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_10.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_10_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_10_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_11.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_11_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_11_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_12.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_12_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_12_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_13.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_13_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_13_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_14.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_14_fhc_nuebar;1'].values()[np.searchsorted(flux_pca['hpc_14_fhc_nuebar;1'].axes[0].edges(),nu_e)-1])))
-        
+        hysyst_beam_horn_2kA.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn_p2kA_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn_p2kA_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn_2kA[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn_m2kA_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn_m2kA_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn_2kA_sigma.append(sigma)
+        hysyst_beam_horn1_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn1_x_p3mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_x_p3mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn1_x_m3mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_x_m3mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_x_3mm_sigma.append(sigma)
+        hysyst_beam_horn1_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn1_y_p3mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_y_p3mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn1_y_m3mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_y_m3mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_y_3mm_sigma.append(sigma)
+        hysyst_beam_spot_1_3mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Beam_spot_1_3mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_spot_1_3mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_spot_1_3mm_sigma.append(sigma)
+        hysyst_beam_spot_1_7mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Beam_spot_1_7mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_spot_1_7mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_spot_1_7mm_sigma.append(sigma)
+        hysyst_beam_horn2_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn2_x_p3mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_x_p3mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn2_x_m3mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_x_m3mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_x_3mm_sigma.append(sigma)
+        hysyst_beam_horn2_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn2_y_p3mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_y_p3mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn2_y_m3mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_y_m3mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_y_3mm_sigma.append(sigma)
+        hysyst_beam_horns_0mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Horns_0mm_water_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horns_0mm_water_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horns_0mm_water_sigma.append(sigma)
+        hysyst_beam_horns_2mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Horns_2mm_water_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horns_2mm_water_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horns_2mm_water_sigma.append(sigma)
+        hysyst_beam_Beam_shift_x_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Beam_shift_x_p1mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_x_p1mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_x_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Beam_shift_x_m1mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_x_m1mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_x_1mm_sigma.append(sigma)
+        hysyst_beam_Beam_shift_y_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Beam_shift_y_p1mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_y_p1mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_y_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Beam_shift_y_m1mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_y_m1mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_y_1mm_sigma.append(sigma)
+        hysyst_beam_Target_z_7mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Target_z_p7mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Target_z_p7mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Target_z_7mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Target_z_m7mm_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Target_z_m7mm_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Target_z_7mm_sigma.append(sigma)
+        hpc_0.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_0_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_0_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_0_sigma.append(sigma)
+        hpc_1.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_1_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_1_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_1_sigma.append(sigma)
+        hpc_2.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_2_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_2_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_2_sigma.append(sigma)
+        hpc_3.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_3_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_3_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_3_sigma.append(sigma)
+        hpc_4.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_4_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_4_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_4_sigma.append(sigma)
+        hpc_5.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_5_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_5_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_5_sigma.append(sigma)
+        hpc_6.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_6_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_6_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_6_sigma.append(sigma)
+        hpc_7.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_7_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_7_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_7_sigma.append(sigma)
+        hpc_8.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_8_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_8_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_8_sigma.append(sigma)
+        hpc_9.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_9_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_9_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_9_sigma.append(sigma)
+        hpc_10.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_10_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_10_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_10_sigma.append(sigma)
+        hpc_11.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_11_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_11_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_11_sigma.append(sigma)
+        hpc_12.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_12_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_12_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_12_sigma.append(sigma)
+        hpc_13.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_13_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_13_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_13_sigma.append(sigma)
+        hpc_14.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_14_{horn_current}_nuebar;1'].values()[np.searchsorted(flux_pca[f'hpc_14_{horn_current}_nuebar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_14_sigma.append(sigma)
+
     elif int(pdg) ==14:
-        repeat+=1
-        hysyst_beam_horn_2kA.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn_p2kA_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn_p2kA_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn_2kA[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn_m2kA_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn_m2kA_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn1_x_p3mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_x_p3mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn1_x_m3mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_x_m3mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn1_y_p3mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_y_p3mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn1_y_m3mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_y_m3mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_spot_1_3mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Beam_spot_1_3mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_spot_1_3mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_spot_1_7mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Beam_spot_1_7mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_spot_1_7mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn2_x_p3mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_x_p3mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn2_x_m3mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_x_m3mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn2_y_p3mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_y_p3mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn2_y_m3mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_y_m3mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horns_0mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Horns_0mm_water_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horns_0mm_water_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horns_2mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Horns_2mm_water_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horns_2mm_water_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_x_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Beam_shift_x_p1mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_x_p1mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_x_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Beam_shift_x_m1mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_x_m1mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_y_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Beam_shift_y_p1mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_y_p1mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_y_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Beam_shift_y_m1mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_y_m1mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Target_z_7mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Target_z_p7mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Target_z_p7mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Target_z_7mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Target_z_m7mm_fhc_numu;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Target_z_m7mm_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_0.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_0_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_0_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_1.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_1_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_1_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_2.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_2_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_2_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_3.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_3_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_3_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_4.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_4_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_4_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_5.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_5_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_5_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_6.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_6_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_6_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_7.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_7_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_7_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_8.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_8_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_8_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_9.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_9_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_9_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_10.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_10_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_10_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_11.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_11_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_11_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_12.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_12_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_12_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_13.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_13_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_13_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        hpc_14.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_14_fhc_numu;1'].values()[np.searchsorted(flux_pca['hpc_14_fhc_numu;1'].axes[0].edges(),nu_e)-1])))
-        
+        hysyst_beam_horn_2kA.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn_p2kA_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn_p2kA_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn_2kA[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn_m2kA_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn_m2kA_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn_2kA_sigma.append(sigma)
+        hysyst_beam_horn1_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn1_x_p3mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_x_p3mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn1_x_m3mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_x_m3mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_x_3mm_sigma.append(sigma)
+        hysyst_beam_horn1_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn1_y_p3mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_y_p3mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn1_y_m3mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_y_m3mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_y_3mm_sigma.append(sigma)
+        hysyst_beam_spot_1_3mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Beam_spot_1_3mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_spot_1_3mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_spot_1_3mm_sigma.append(sigma)
+        hysyst_beam_spot_1_7mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Beam_spot_1_7mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_spot_1_7mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_spot_1_7mm_sigma.append(sigma)
+        hysyst_beam_horn2_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn2_x_p3mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_x_p3mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn2_x_m3mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_x_m3mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_x_3mm_sigma.append(sigma)
+        hysyst_beam_horn2_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn2_y_p3mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_y_p3mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn2_y_m3mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_y_m3mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_y_3mm_sigma.append(sigma)
+        hysyst_beam_horns_0mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Horns_0mm_water_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horns_0mm_water_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horns_0mm_water_sigma.append(sigma)
+        hysyst_beam_horns_2mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Horns_2mm_water_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horns_2mm_water_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horns_2mm_water_sigma.append(sigma)
+        hysyst_beam_Beam_shift_x_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Beam_shift_x_p1mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_x_p1mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_x_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Beam_shift_x_m1mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_x_m1mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_x_1mm_sigma.append(sigma)
+        hysyst_beam_Beam_shift_y_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Beam_shift_y_p1mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_y_p1mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_y_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Beam_shift_y_m1mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_y_m1mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_y_1mm_sigma.append(sigma)
+        hysyst_beam_Target_z_7mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Target_z_p7mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Target_z_p7mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Target_z_7mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Target_z_m7mm_{horn_current}_numu;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Target_z_m7mm_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Target_z_7mm_sigma.append(sigma)
+        hpc_0.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_0_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_0_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_0_sigma.append(sigma)
+        hpc_1.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_1_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_1_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_1_sigma.append(sigma)
+        hpc_2.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_2_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_2_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_2_sigma.append(sigma)
+        hpc_3.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_3_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_3_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_3_sigma.append(sigma)
+        hpc_4.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_4_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_4_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_4_sigma.append(sigma)
+        hpc_5.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_5_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_5_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_5_sigma.append(sigma)
+        hpc_6.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_6_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_6_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_6_sigma.append(sigma)
+        hpc_7.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_7_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_7_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_7_sigma.append(sigma)
+        hpc_8.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_8_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_8_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_8_sigma.append(sigma)
+        hpc_9.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_9_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_9_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_9_sigma.append(sigma)
+        hpc_10.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_10_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_10_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_10_sigma.append(sigma)
+        hpc_11.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_11_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_11_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_11_sigma.append(sigma)
+        hpc_12.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_12_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_12_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_12_sigma.append(sigma)
+        hpc_13.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_13_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_13_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_13_sigma.append(sigma)
+        hpc_14.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_14_{horn_current}_numu;1'].values()[np.searchsorted(flux_pca[f'hpc_14_{horn_current}_numu;1'].axes[0].edges(),nu_e)-1])))
+        hpc_14_sigma.append(sigma)
+
     elif int(pdg) == -14:
-        repeat+=1
-        hysyst_beam_horn_2kA.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn_p2kA_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn_p2kA_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn_2kA[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn_m2kA_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn_m2kA_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn1_x_p3mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_x_p3mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn1_x_m3mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_x_m3mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn1_y_p3mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_y_p3mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn1_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn1_y_m3mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn1_y_m3mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_spot_1_3mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Beam_spot_1_3mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_spot_1_3mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_spot_1_7mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Beam_spot_1_7mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_spot_1_7mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn2_x_p3mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_x_p3mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn2_x_m3mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_x_m3mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Horn2_y_p3mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_y_p3mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horn2_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Horn2_y_m3mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horn2_y_m3mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horns_0mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Horns_0mm_water_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horns_0mm_water_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_horns_2mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus['hsyst_beam_Horns_2mm_water_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Horns_2mm_water_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_x_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Beam_shift_x_p1mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_x_p1mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_x_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Beam_shift_x_m1mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_x_m1mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_y_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Beam_shift_y_p1mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_y_p1mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Beam_shift_y_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Beam_shift_y_m1mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Beam_shift_y_m1mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Target_z_7mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus['hsyst_beam_Target_z_p7mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Target_z_p7mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hysyst_beam_Target_z_7mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus['hsyst_beam_Target_z_m7mm_fhc_numubar;1'].values()[np.searchsorted(flux_beam_focus['hsyst_beam_Target_z_m7mm_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_0.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_0_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_0_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_1.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_1_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_1_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_2.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_2_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_2_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_3.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_3_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_3_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_4.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_4_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_4_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_5.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_5_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_5_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_6.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_6_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_6_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_7.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_7_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_7_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_8.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_8_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_8_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_9.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_9_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_9_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_10.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_10_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_10_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_11.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_11_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_11_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_12.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_12_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_12_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_13.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_13_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_13_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
-        hpc_14.append(list(map(lambda x: x + 1, sigma*flux_pca['hpc_14_fhc_numubar;1'].values()[np.searchsorted(flux_pca['hpc_14_fhc_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn_2kA.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn_p2kA_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn_p2kA_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn_2kA[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn_m2kA_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn_m2kA_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn_2kA_sigma.append(sigma)
+        hysyst_beam_horn1_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn1_x_p3mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_x_p3mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn1_x_m3mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_x_m3mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_x_3mm_sigma.append(sigma)
+        hysyst_beam_horn1_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn1_y_p3mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_y_p3mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn1_y_m3mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn1_y_m3mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn1_y_3mm_sigma.append(sigma)
+        hysyst_beam_spot_1_3mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Beam_spot_1_3mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_spot_1_3mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_spot_1_3mm_sigma.append(sigma)
+        hysyst_beam_spot_1_7mm.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Beam_spot_1_7mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_spot_1_7mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_spot_1_7mm_sigma.append(sigma)
+        hysyst_beam_horn2_x_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn2_x_p3mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_x_p3mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_x_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn2_x_m3mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_x_m3mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_x_3mm_sigma.append(sigma)
+        hysyst_beam_horn2_y_3mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Horn2_y_p3mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_y_p3mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_y_3mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Horn2_y_m3mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horn2_y_m3mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horn2_y_3mm_sigma.append(sigma)
+        hysyst_beam_horns_0mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Horns_0mm_water_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horns_0mm_water_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horns_0mm_water_sigma.append(sigma)
+        hysyst_beam_horns_2mm_water.append(list(map(lambda x: x + 1, sigma*flux_beam_focus[f'hsyst_beam_Horns_2mm_water_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Horns_2mm_water_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_horns_2mm_water_sigma.append(sigma)
+        hysyst_beam_Beam_shift_x_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Beam_shift_x_p1mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_x_p1mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_x_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Beam_shift_x_m1mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_x_m1mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_x_1mm_sigma.append(sigma)
+        hysyst_beam_Beam_shift_y_1mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Beam_shift_y_p1mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_y_p1mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_y_1mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Beam_shift_y_m1mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Beam_shift_y_m1mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Beam_shift_y_1mm_sigma.append(sigma)
+        hysyst_beam_Target_z_7mm.append(list(map(lambda x: x + 1, abs_sigma[0:4]*flux_beam_focus[f'hsyst_beam_Target_z_p7mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Target_z_p7mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Target_z_7mm[-1].extend(list(map(lambda x: x + 1, abs_sigma[4:]*flux_beam_focus[f'hsyst_beam_Target_z_m7mm_{horn_current}_numubar;1'].values()[np.searchsorted(flux_beam_focus[f'hsyst_beam_Target_z_m7mm_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hysyst_beam_Target_z_7mm_sigma.append(sigma)
+        hpc_0.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_0_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_0_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_0_sigma.append(sigma)
+        hpc_1.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_1_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_1_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_1_sigma.append(sigma)
+        hpc_2.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_2_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_2_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_2_sigma.append(sigma)
+        hpc_3.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_3_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_3_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_3_sigma.append(sigma)
+        hpc_4.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_4_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_4_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_4_sigma.append(sigma)
+        hpc_5.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_5_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_5_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_5_sigma.append(sigma)
+        hpc_6.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_6_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_6_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_6_sigma.append(sigma)
+        hpc_7.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_7_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_7_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_7_sigma.append(sigma)
+        hpc_8.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_8_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_8_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_8_sigma.append(sigma)
+        hpc_9.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_9_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_9_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_9_sigma.append(sigma)
+        hpc_10.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_10_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_10_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_10_sigma.append(sigma)
+        hpc_11.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_11_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_11_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_11_sigma.append(sigma)
+        hpc_12.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_12_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_12_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_12_sigma.append(sigma)
+        hpc_13.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_13_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_13_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_13_sigma.append(sigma)
+        hpc_14.append(list(map(lambda x: x + 1, sigma*flux_pca[f'hpc_14_{horn_current}_numubar;1'].values()[np.searchsorted(flux_pca[f'hpc_14_{horn_current}_numubar;1'].axes[0].edges(),nu_e)-1])))
+        hpc_14_sigma.append(sigma)
+
 def ensure_dir(rootdir, path):
     cur = rootdir
     for part in path.strip("/").split("/"):
@@ -303,7 +444,7 @@ CAST = {"f": float, "d": float, "i": int, "l": int}
 LEAF = {"f": "F", "d": "D", "i": "I", "l": "L"}
 INT_SENTINEL = -9999
 
-f = ROOT.TFile('/Users/danielcarber/Documents/ICARUS/icarus_numi_nue_mc_onbeam_offbeam_syst.root', "UPDATE")
+f = ROOT.TFile(file_name, "UPDATE")
 
 # -------- your existing spec (some keys might be 1D scalars, some 2D lists-of-7) --------
 spec = {
@@ -327,6 +468,23 @@ spec = {
     "hysyst_hpc_6_v": ("f", hpc_6), "hysyst_hpc_7_v": ("f", hpc_7), "hysyst_hpc_8_v": ("f", hpc_8),
     "hysyst_hpc_9_v": ("f", hpc_9), "hysyst_hpc_10_v": ("f", hpc_10), "hysyst_hpc_11_v": ("f", hpc_11),
     "hysyst_hpc_12_v": ("f", hpc_12), "hysyst_hpc_13_v": ("f", hpc_13), "hysyst_hpc_14_v": ("f", hpc_14),
+    "hysyst_beam_horn_2kA_sigma": ("f", hysyst_beam_horn_2kA_sigma),
+    "hysyst_beam_horn1_x_3mm_sigma": ("f", hysyst_beam_horn1_x_3mm_sigma),
+    "hysyst_beam_horn1_y_3mm_sigma": ("f", hysyst_beam_horn1_y_3mm_sigma),
+    "hysyst_beam_spot_1_3mm_sigma": ("f", hysyst_beam_spot_1_3mm_sigma),
+    "hysyst_beam_spot_1_7mm_sigma": ("f", hysyst_beam_spot_1_7mm_sigma),
+    "hysyst_beam_horn2_x_3mm_sigma": ("f", hysyst_beam_horn2_x_3mm_sigma),
+    "hysyst_beam_horn2_y_3mm_sigma": ("f", hysyst_beam_horn2_y_3mm_sigma),
+    "hysyst_beam_horns_0mm_water_sigma": ("f", hysyst_beam_horns_0mm_water_sigma),
+    "hysyst_beam_horns_2mm_water_sigma": ("f", hysyst_beam_horns_2mm_water_sigma),
+    "hysyst_beam_Beam_shift_x_1mm_sigma": ("f", hysyst_beam_Beam_shift_x_1mm_sigma),
+    "hysyst_beam_Beam_shift_y_1mm_sigma": ("f", hysyst_beam_Beam_shift_y_1mm_sigma),
+    "hysyst_beam_Target_z_7mm_sigma": ("f", hysyst_beam_Target_z_7mm_sigma),
+    "hysyst_hpc_0_sigma": ("f", hpc_0_sigma), "hysyst_hpc_1_sigma": ("f", hpc_1_sigma), "hysyst_hpc_2_sigma": ("f", hpc_2_sigma),
+    "hysyst_hpc_3_sigma": ("f", hpc_3_sigma), "hysyst_hpc_4_sigma": ("f", hpc_4_sigma), "hysyst_hpc_5_sigma": ("f", hpc_5_sigma),
+    "hysyst_hpc_6_sigma": ("f", hpc_6_sigma), "hysyst_hpc_7_sigma": ("f", hpc_7_sigma), "hysyst_hpc_8_sigma": ("f", hpc_8_sigma),
+    "hysyst_hpc_9_sigma": ("f", hpc_9_sigma), "hysyst_hpc_10_sigma": ("f", hpc_10_sigma), "hysyst_hpc_11_sigma": ("f", hpc_11_sigma),
+    "hysyst_hpc_12_sigma": ("f", hpc_12_sigma), "hysyst_hpc_13_sigma": ("f", hpc_13_sigma), "hysyst_hpc_14_sigma": ("f", hpc_14_sigma),
 }
 
 # ------------ helpers to detect 2D-of-7 vs 1D -------------
@@ -344,7 +502,6 @@ def is_1d(seq):
 # Partition keys
 keys_2d7 = [k for k, (_, v) in spec.items() if is_2d_of_7(v)]
 keys_1d  = [k for k, (_, v) in spec.items() if not is_2d_of_7(v)]
-
 # Derive number of entries N from whichever group is present
 if keys_2d7:
     N = len(spec[keys_2d7[0]][1])
@@ -365,7 +522,7 @@ for k in keys_1d:
 tdir = ensure_dir(f, "events/full")
 tdir.cd()
 
-t = ROOT.TTree("NuMIfluxsim", "per-entry vectors (len=7) plus scalars")
+t = ROOT.TTree("selected_NuMIfluxsimTree", "per-entry vectors (len=7) plus scalars")
 branch_order = list(spec.keys())
 tdir.WriteObject(ROOT.TObjString(json.dumps(branch_order)), "branch_labels_json")
 
