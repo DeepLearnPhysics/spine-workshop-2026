@@ -93,7 +93,7 @@ Everyone participating in this workshop should have access to GPUs through NERSC
 
 ### EAF
 
-* DUNE collaborators also have access to the Elastic Analysis Facility (EAF) at FNAL, equipped with GPUs.
+DUNE collaborators also have access to the Elastic Analysis Facility (EAF) at FNAL, equipped with GPUs.
 
 * Go to https://eaf.fnal.gov
     * This requires FNAL VPN or being on-site
