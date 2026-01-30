@@ -1,6 +1,6 @@
-# SBN SPINE Workshop 2025
+# DUNE SPINE Workshop 2026
 
-This repository contains all necessary resources to participate in the 2025 SPINE workshop organized for the SBN reconstruction groups (SBND and ICARUS). This workshop aims to train new comers to use [SPINE](https://github.com/DeepLearnPhysics/spine), our machine-learning-based particle imaging detector reconstruction chain. You can find the workshop agenda [here](https://indico.nevis.columbia.edu/event/11/timetable/#20250929).
+This repository contains all necessary resources to participate in the 2026 SPINE workshop organized for the DUNE reconstruction groups (ND + FD, and their respective prototypes). This workshop aims to train new comers to use [SPINE](https://github.com/DeepLearnPhysics/spine), our machine-learning-based particle imaging detector reconstruction chain. You can find the workshop agenda [here](https://indico.cern.ch/event/1581241/timetable/#20260202).
 
 ## Software environment
 
@@ -8,8 +8,8 @@ For the workshop, we will use [this "Docker container"](https://hub.docker.com/l
 
 Some notes below:
 
-* The image is fairly large (multiple GBs). Please download in advance if you are using it locally. It is used in both NVIDIA GPU and CPU running mode of our software.
-* Supported GPUs include those with NVIDIA Volta (e.g. V100), Turing (e.g. RTX 2080Ti), and Ampere architectures (e.g. A100, RTX 3080). If you want an older architectures to be supported, such as Pascal, please [contact Kazu](mailto:kterao@slac.stanford.edu).
+* The image is fairly large (multiple GBs). Please download in advance if you are using it locally. It can be used in both NVIDIA GPU and CPU running mode of our software.
+* Supported GPUs include those with NVIDIA Volta (e.g. V100), Turing (e.g. RTX 2080Ti), Ampere (e.g. A100, RTX 3080) and Hopper architectures (e.g. H200). If you want an older architectures to be supported, such as Pascal, please [contact Kazu](mailto:kterao@slac.stanford.edu).
 * We assume basic knowledge about _software container_, in particular `Docker`. If you are learning for the first time, we recommend to use/learn about `Apptainer` ([website](https://apptainer.org/docs/user/latest/)) instead of `Docker`.
     * You can pull a apptainer image as follows
 ```shell
@@ -75,23 +75,7 @@ $ docker run -i -t e97e0c78dc4b bash
   - [ICARUS BNB nu + cosmics](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/icarus_bnb_corsika_small_spine.h5) (Day 4)
   - [ICARUS BNB nue + cosmics](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/icarus_bnb_nue_corsika_small_spine.h5) (Day 4)
 
-3. The *network model parameters* for the inference tutorial can be found at:
-- S3DF
-```shell
-/sdf/data/neutrino/public_html/spine_workshop/weights/generic_snapshot-4999.ckpt # Generic
-/sdf/data/neutrino/public_html/spine_workshop/weights/icarus_snapshot-7999.ckpt # ICARUS
-/sdf/data/neutrino/public_html/spine_workshop/weights/sbnd_snapshot-1999.ckpt # SBND
-```
-- NERSC
-```shell
-/global/cfs/cdirs/dune/users/drielsma/spine_workshop/weights/generic_snapshot-4999.ckpt # Generic
-/global/cfs/cdirs/dune/users/drielsma/spine_workshop/weights/icarus_snapshot-7999.ckpt # ICARUS
-/global/cfs/cdirs/dune/users/drielsma/spine_workshop/weights/sbnd_snapshot-1999.ckpt # SBND
-```
-- Public
-  - Generic: [generic_snapshot-2999.ckpt](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/weights/generic_snapshot-4999.ckpt)
-  - ICARUS: [icarus_snapshot-7999.ckpt](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/weights/icarus_snapshot-7999.ckpt)
-  - SBND: [sbnd_snapshot-1999.ckpt](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/weights/sbnd_snapshot-1999.ckpt)
+3. The *network model parameters* for the inference tutorial are stored in a public area and pulled on the fly by SPINE when not cached, nothing to do here anymore!
 
 ## Computing resource
 Most of the notebooks can be run strictly on CPU. The following notebooks will run significantly slower on CPU, however:
@@ -99,19 +83,55 @@ Most of the notebooks can be run strictly on CPU. The following notebooks will r
 - Inference and HDF5 file making notebook
 
 For all other notebooks, you can run them locally, provided that you download:
-- Apptainer container
+- Apptainer/docker container
 - Necessary data
-- [SPINE v0.7.1](https://github.com/DeepLearnPhysics/spine)
+- [SPINE v0.9.4+](https://github.com/DeepLearnPhysics/spine)
 
-To gain access to GPUs:
-- Everyone participating in this workshop should have access to both S3DF or NERSC, if you do not, please reach out to [Francois](mailto:drielsma@slac.stanford.edu).
-  - S3DF Jupyter ondemand: https://s3df.slac.stanford.edu/public/doc/#/
+### NERSC
 
-* SBN collaborators also have access to the Wilson Cluster at FNAL, equipped with GPUs. Below is a few commands to log-in and load `Apptainer` with which you can run a container image for the workshop (see the previous section). For how-to utilize the Wilson Cluster, refer to [their website](https://computing.fnal.gov/wilsoncluster/slurm-job-scheduler/) as well as [this](https://cdcvs.fnal.gov/redmine/projects/nova_reconstruction/wiki/The_Wilson_Cluster) and [that](https://cdcvs.fnal.gov/redmine/projects/nova_reconstruction/wiki/Step-by-step_guide_to_running_on_the_WC) documentation from NOvA (replace `nova` with `icarus` or `sbnd` and most commands should just work).
+Everyone participating in this workshop should have access to GPUs through NERSC, under project `m5252`. If you do not, please reach out to [Francois](mailto:drielsma@slac.stanford.edu).
 
-```shell
-$ ssh $USER@wc.fnal.gov
-$ module load apptainer
-$ apptainer --version
-apptainer version 3.6.4
+### EAF
+
+* DUNE collaborators also have access to the Elastic Analysis Facility (EAF) at FNAL, equipped with GPUs.
+
+* Go to https://eaf.fnal.gov
+    * This requires FNAL VPN or being on-site
+    * See https://eafdocs.fnal.gov/master/index.html for (some) documentation
+* Choose FIFE/Neutrinos from the options
+    * This will have the usual /exp/sbnd/ and /exp/icarus/ systems mounted, and is most similar to using the GPVM nodes
+* Run conda create --name apptainer-env apptainer
+    * this creates a conda environment which has apptainer installed
+    * This is necessary as apptainer is needed to open the image which has the SPINE setup configured, but we can’t install it directly on the system (perhaps we could ask someone)
+* Create a new python kernel with python -m ipykernel install --name spine-apptainer-kernel --display-name "SPINE Apptainer" --user
+* In the new ~/.local/share/jupyter/kernels/spine-apptainer-kernel directory add the run_kernel.sh and kernel.json files (see bellow)
+* You should now be able to start a notebook with the SPINE Apptainer kernel and run SPINE
+
+`run_kernel.sh`
+```bash
+#!/bin/bash
+
+source ~/.bashrc
+conda activate apptainer-env
+apptainer exec --bind /exp/icarus/data/users \
+               --bind /exp/sbnd/data/users \
+               --bind ~ \
+               --env "LD_PRELOAD=\"\"" \
+               --env "LC_ALL=C.UTF-8" \
+               --nv /exp/sbnd/data/users/brindenc/containers/larcv2_ub2204-cuda121-torch251-larndsim.sif python -m ipykernel $@
+
+conda deactivate
+```
+
+`kernel.json`
+```json
+{
+  "argv": [
+    "~/.local/share/jupyter/kernels/spine-apptainer-kernel/run_kernel.sh",
+    "-f",
+    "{connection_file}"
+  ],
+  "display_name": "SPINE Apptainer",
+  "language": "python"
+}
 ```
