@@ -25,24 +25,8 @@ $ salloc --nodes 1 --qos shared_interactive --time 00:30:00 --constraint gpu --g
 ```
 ### Docker alternative
 
-You can also pull the docker image using docker (easier on Mac and Windows) directly. First install the docker desktop client from [https://docs.docker.com/desktop/](https://docs.docker.com/desktop/).
 
-Once that is done and the client is running, simply do:
-```shell
-$ docker pull deeplearnphysics/larcv2:ub2204-cu121-torch251-larndsim
-```
-To see which images are present on your system, you can use docker images. It will look something like this:
-```shell
-$ docker images
-REPOSITORY                TAG                                      IMAGE ID       CREATED         SIZE
-deeplearnphysics/larcv2   ub22.04-cuda12.1-pytorch2.4.0-larndsim   e97e0c78dc4b   12 months ago   25GB
-```
-to run a shell in your image, simply do:
-```shell
-$ docker run -i -t e97e0c78dc4b bash
-```
 
-* [Ask Francois](mailto:drielsma@slac.stanford.edu) for questions or a request for a separate tutorial if interested.
 
 ## Resources
 
@@ -77,19 +61,20 @@ $ docker run -i -t e97e0c78dc4b bash
 
 3. The *network model parameters* for the inference tutorial are stored in a public area and pulled on the fly by SPINE when not cached, nothing to do here anymore!
 
-## Computing resource
-Most of the notebooks can be run strictly on CPU. The following notebooks will run significantly slower on CPU, however:
-- Training/validation notebook
-- Inference and HDF5 file making notebook
+## Jupyter notebooks
 
-For all other notebooks, you can run them locally, provided that you download:
-- Apptainer/docker container
-- Necessary data
-- [SPINE v0.9.4+](https://github.com/DeepLearnPhysics/spine)
+In this we briefly summarize how to setup a Jupyter notebook with the necessary dependencies to run SPINE. There are three options for DUNE collaborators:
+* NERSC: This is the option we will use throughout this workshop, everyone should be using this
+* EAF: This is FNAL's system, every DUNE collaborator should have access to this (good longer-term solution)
+* Local: If you have a GPU on your laptop (or not!) you can run all (most!) of the notebooks presented in this workshop locally
 
 ### NERSC
 
 Everyone participating in this workshop should have access to GPUs through NERSC, under project `m5252`. If you do not, please reach out to [Francois](mailto:drielsma@slac.stanford.edu).
+
+The instructions to set up the `apptainer` container as a Jupyter kernel can be found here: [https://docs.nersc.gov/services/jupyter/how-to-guides/#shifter](https://docs.nersc.gov/services/jupyter/how-to-guides/#shifter)
+
+Go to the NERSC Jupyter portal: [https://jupyter.nersc.gov/hub/home](https://jupyter.nersc.gov/hub/home)
 
 ### EAF
 
@@ -111,10 +96,8 @@ Create a new python kernel with
 ```bash
 python -m ipykernel install --name spine-apptainer-kernel --display-name "SPINE Apptainer" --user
 ```
-* In the new `~/.local/share/jupyter/kernels/spine-apptainer-kernel` directory add the `run_kernel.sh` and `kernel.json` files (see below)
-* You should now be able to start a notebook with the SPINE Apptainer kernel and run SPINE.
 
-Here are what the `.json` files should be set up to look like:
+In the newly created `~/.local/share/jupyter/kernels/spine-apptainer-kernel` directory add the `run_kernel.sh` and `kernel.json` files as shown here:
 
 `run_kernel.sh`
 ```bash
@@ -143,3 +126,37 @@ conda deactivate
   "language": "python"
 }
 ```
+
+**You should now be able to start a notebook with the SPINE Apptainer kernel and run SPINE!**
+
+### Local
+
+Most of the notebooks can be run strictly on CPU. The following notebooks will run significantly slower on CPU, however:
+- Training/validation notebook
+- Inference and HDF5 file making notebook
+
+For all other notebooks, you can run them locally, provided that you download:
+- Apptainer/docker container
+- Necessary data
+- [SPINE v0.9.4+](https://github.com/DeepLearnPhysics/spine)
+
+You can also pull the docker image using docker (easier on Mac and Windows) directly. First install the docker desktop client from [https://docs.docker.com/desktop/](https://docs.docker.com/desktop/).
+
+Once that is done and the client is running, simply do:
+```shell
+$ docker pull deeplearnphysics/larcv2:ub2204-cu121-torch251-larndsim
+```
+To see which images are present on your system, you can use docker images. It will look something like this:
+```shell
+$ docker images
+REPOSITORY                TAG                                      IMAGE ID       CREATED         SIZE
+deeplearnphysics/larcv2   ub22.04-cuda12.1-pytorch2.4.0-larndsim   e97e0c78dc4b   12 months ago   25GB
+```
+to run a shell in your image, simply do:
+```shell
+$ docker run -i -t e97e0c78dc4b bash
+```
+
+
+
+* [Ask Francois](mailto:drielsma@slac.stanford.edu) for questions or a request for a separate tutorial if interested.
