@@ -93,19 +93,28 @@ Everyone participating in this workshop should have access to GPUs through NERSC
 
 ### EAF
 
-DUNE collaborators also have access to the Elastic Analysis Facility (EAF) at FNAL, equipped with GPUs.
+All DUNE collaborators should also have access to the **Elastic Analysis Facility (EAF)** at FNAL, equipped with GPUs. Here are some basic instructions to set things up.
 
-* Go to https://eaf.fnal.gov
-    * This requires FNAL VPN or being on-site
-    * See https://eafdocs.fnal.gov/master/index.html for (some) documentation
+Go to the EAF portal: [https://eaf.fnal.gov](https://eaf.fnal.gov)
+* This requires FNAL VPN or being on-site
+* See [https://eafdocs.fnal.gov/master/index.html](https://eafdocs.fnal.gov/master/index.html) for some basic documentation
 * Choose FIFE/Neutrinos from the options
-    * This will have the usual /exp/sbnd/ and /exp/icarus/ systems mounted, and is most similar to using the GPVM nodes
-* Run conda create --name apptainer-env apptainer
-    * this creates a conda environment which has apptainer installed
-    * This is necessary as apptainer is needed to open the image which has the SPINE setup configured, but we can’t install it directly on the system (perhaps we could ask someone)
-* Create a new python kernel with python -m ipykernel install --name spine-apptainer-kernel --display-name "SPINE Apptainer" --user
-* In the new ~/.local/share/jupyter/kernels/spine-apptainer-kernel directory add the run_kernel.sh and kernel.json files (see bellow)
-* You should now be able to start a notebook with the SPINE Apptainer kernel and run SPINE
+  * This will have the usual `/exp/dune/` file system mounted, similar to using the GPVM nodes
+
+Run (in a terminal):
+```bash
+conda create --name apptainer-env apptainer
+```
+* This creates a conda environment which has `apptainer` installed. This is necessary as `apptainer` is needed to open the image which has the SPINE dependency configured
+
+Create a new python kernel with
+```bash
+python -m ipykernel install --name spine-apptainer-kernel --display-name "SPINE Apptainer" --user
+```
+* In the new `~/.local/share/jupyter/kernels/spine-apptainer-kernel` directory add the `run_kernel.sh` and `kernel.json` files (see below)
+* You should now be able to start a notebook with the SPINE Apptainer kernel and run SPINE.
+
+Here are what the `.json` files should be set up to look like:
 
 `run_kernel.sh`
 ```bash
@@ -113,8 +122,7 @@ DUNE collaborators also have access to the Elastic Analysis Facility (EAF) at FN
 
 source ~/.bashrc
 conda activate apptainer-env
-apptainer exec --bind /exp/icarus/data/users \
-               --bind /exp/sbnd/data/users \
+apptainer exec --bind /exp/dune/data/users \
                --bind ~ \
                --env "LD_PRELOAD=\"\"" \
                --env "LC_ALL=C.UTF-8" \
