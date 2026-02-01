@@ -23,21 +23,12 @@ For nersc:
 ```shell
 $ salloc --nodes 1 --qos shared_interactive --time 00:30:00 --constraint gpu --gpus 1 --account=m5252 --image=deeplearnphysics/larcv2:ub2204-cu121-torch251-larndsim shifter /bin/bash
 ```
-### Docker alternative
-
-
-
 
 ## Resources
 
 1. The *configuration files* are packages with this repository.
 
 2. You can find *data files* for the examples used in this workshop under:
-- S3DF
-```shell
-/sdf/data/neutrino/public_html/spine_workshop/larcv/ # Example MPV/MPR LArCV files prior to reconstruction
-/sdf/data/neutrino/public_html/spine_workshop/reco/  # Reconstructed HDF5 files
-```
 - NERSC
 ```shell
 /global/cfs/cdirs/dune/users/drielsma/spine_workshop/larcv/ # Example MPV/MPR LArCV files prior to reconstruction
