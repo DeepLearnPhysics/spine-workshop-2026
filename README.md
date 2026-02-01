@@ -21,7 +21,7 @@ $ apptainer exec --bind /path/to/workshop/folder/ /path/to/container.sif bash
 ```
 For nersc:
 ```shell
-$ salloc --nodes 1 --qos shared_interactive --time 00:30:00 --constraint gpu --gpus 1 --account=dune --image=deeplearnphysics/larcv2:ub2204-cu121-torch251-larndsim shifter /bin/bash
+$ salloc --nodes 1 --qos shared_interactive --time 00:30:00 --constraint gpu --gpus 1 --account=m5252 --image=deeplearnphysics/larcv2:ub2204-cu121-torch251-larndsim shifter /bin/bash
 ```
 ### Docker alternative
 
