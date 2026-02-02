@@ -31,8 +31,8 @@ $ salloc --nodes 1 --qos shared_interactive --time 00:30:00 --constraint gpu --g
 2. You can find *data files* for the examples used in this workshop under:
 - NERSC
 ```shell
-/global/cfs/cdirs/m5252/dune/spine/larcv/ # Example MPV/MPR LArCV files prior to reconstruction
-/global/cfs/cdirs/m5252/dune/spine/reco/  # Reconstructed HDF5 files
+/global/cfs/cdirs/m5252/dune/spine/workshop/larcv/ # Example MPV/MPR LArCV files prior to reconstruction
+/global/cfs/cdirs/m5252/dune/spine/workshop/reco/  # Reconstructed HDF5 files
 ```
 - Public
   - [Small LArCV files](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/) (Day 1)
