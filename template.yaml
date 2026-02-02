@@ -3,6 +3,10 @@ io:
   reader:
     name: hdf5
     file_keys: DATA_PATH
+
+# Geometry
+geo:
+  detector: DETECTOR
     
 # Build reconstruction output representations
 build:
