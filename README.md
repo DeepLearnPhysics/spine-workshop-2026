@@ -31,24 +31,22 @@ $ salloc --nodes 1 --qos shared_interactive --time 00:30:00 --constraint gpu --g
 2. You can find *data files* for the examples used in this workshop under:
 - NERSC
 ```shell
-/global/cfs/cdirs/dune/users/drielsma/spine_workshop/larcv/ # Example MPV/MPR LArCV files prior to reconstruction
-/global/cfs/cdirs/dune/users/drielsma/spine_workshop/reco/  # Reconstructed HDF5 files
+/global/cfs/cdirs/dune/users/drielsma/spine/workshop/larcv/ # Example MPV/MPR LArCV files prior to reconstruction
+/global/cfs/cdirs/dune/users/drielsma/spine/workshop/reco/  # Reconstructed HDF5 files
 ```
 - Public
-  - [Small LArCV files](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/larcv/) (Day 1)
-    - [Generic](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/larcv/generic_small.root)
-    - [ICARUS](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/larcv/icarus_small.root)
-    - [SBND](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/larcv/sbnd_small.root)
-  - [Small corresponding reconstructed HDF5 files](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/) (Day 2)
-    - [Generic](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/generic_small_spine.h5)
-    - [ICARUS](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/icarus_small_spine.h5)
-    - [SBND](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/sbnd_small_spine.h5)
-  - [Medium reconstructed HDF5 files](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/) (Days 3)
-    - [Generic](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/generic_medium_spine.h5)
-    - [ICARUS](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/icarus_medium_spine.h5)
-    - [SBND](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/sbnd_medium_spine.h5)
-  - [ICARUS BNB nu + cosmics](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/icarus_bnb_corsika_small_spine.h5) (Day 4)
-  - [ICARUS BNB nue + cosmics](https://s3df.slac.stanford.edu/data/neutrino/spine_workshop/reco/icarus_bnb_nue_corsika_small_spine.h5) (Day 4)
+  - [Small LArCV files](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/) (Day 1)
+    - [Generic](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/generic_small.root)
+    - [ND-LAr](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/nd-lar_small.root)
+    - [2x2](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/2x2_small.root)
+    - [FSD](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/fsd_small.root)
+    - [DUNE FD-HD 10kt-1x2x6](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/dune10kt-1x2x6_small.root)
+    - [ProtoDUNE-SP](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/protodune-sp_small.root)
+    - [ProtoDUNE-HD](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/protodune-hd_small.root)
+    - [ProtoDUNE-VD](https://s3df.slac.stanford.edu/data/neutrino/spine/workshop/larcv/protodune-vd_small.root)
+  - [Small corresponding reconstructed HDF5 files] TODO
+  - [Medium reconstructed HDF5 files] TODO
+  - [Physics datasets] TODO
 
 3. The *network model parameters* for the inference tutorial are stored in a public area and pulled on the fly by SPINE when not cached, nothing to do here anymore!
 
