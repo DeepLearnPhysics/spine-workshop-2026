@@ -1,30 +1,23 @@
 # Base configuration
 base:
   world_size: 1
-  iterations: 25000 # ~128k/128 -> ~1k/epoch -> ~25 epochs
+  epochs: 0.1
   seed: 0
   unwrap: false
   log_dir: logs/uresnet
   log_step: 1
   overwrite_log: true
-  train:
-    weight_prefix: weights/uresnet/snapshot
-    save_step: 1000 # ~1 epoch
-    optimizer:
-      name: Adam
-      lr: 0.001
 
 # IO configuration
 io:
   loader:
-    batch_size: 128
+    batch_size: 32
     shuffle: false
     num_workers: 4
     collate_fn: all
-    sampler: random_sequence
     dataset:
       name: larcv
-      file_keys: /sdf/data/neutrino/generic/mpvmpr_2020_01_v04/train.root
+      file_list: /global/cfs/cdirs/m5252/dune/sim/protodune-sp/mpvmpr_v0/test_file_list.txt
       schema:
         data:
           parser: sparse3d
@@ -36,7 +29,7 @@ io:
 # Model configuration
 model:
   name: uresnet
-  weight_path: null
+  weight_path: weights/uresnet/snapshot*.ckpt
 
   network_input:
     data: data

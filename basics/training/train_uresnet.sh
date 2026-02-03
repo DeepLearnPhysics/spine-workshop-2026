@@ -1,16 +1,16 @@
-#!/bin/bash 
+#!/bin/bash
 
-#SBATCH --account=neutrino:ml-dev
-#SBATCH --partition=ampere
+#SBATCH --account=m5252
+#SBATCH --qos=shared
+#SBATCH --constraint=gpu
 
 #SBATCH --job-name=train_uresnet
 #SBATCH --output=batch_outputs/output-train_uresnet.txt 
 #SBATCH --error=batch_outputs/output-train_uresnet.txt
 
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=5
-#SBATCH --mem-per-cpu=4g
-#SBATCH --time=6:00:00 
-#SBATCH --gpus a100:1
+#SBATCH --gpus=1
+#SBATCH --cpus-per-gpu=6
+#SBATCH --mem=16g
+#SBATCH --time=0:10:00
 
-singularity exec --bind /sdf/group/neutrino/drielsma/,/sdf/data/neutrino/ --nv /sdf/group/neutrino/images/develop.sif bash -c "python3 /sdf/data/neutrino/software/spine/bin/run.py -c /sdf/group/neutrino/drielsma/train/example/uresnet.cfg"
+srun -n 1 shifter --image deeplearnphysics/larcv2:ub2204-cu121-torch251-larndsim bash -c "python3 /global/cfs/cdirs/m5252/software/spine/bin/run.py -c /global/cfs/cdirs/m5252/dune/spine/train/example/uresnet.yaml"

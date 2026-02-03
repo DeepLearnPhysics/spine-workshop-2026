@@ -1,7 +1,7 @@
 # Base configuration
 base:
   world_size: 1
-  iterations: 25000 # ~128k/128 -> ~1k/epoch -> ~25 epochs
+  epochs: 25
   seed: 0
   unwrap: false
   log_dir: logs
@@ -9,7 +9,7 @@ base:
   overwrite_log: true
   train:
     weight_prefix: weights/grappa_shower/snapshot-
-    save_step: 1000 # ~1 epoch
+    save_step: 10000 # ~1 epoch
     optimizer:
       name: Adam
       lr: 0.001
@@ -17,14 +17,14 @@ base:
 # IO configuration
 io:
   loader:
-    batch_size: 128
+    batch_size: 32
     shuffle: false
     num_workers: 8
     collate_fn: all
     sampler: random_sequence
     dataset:
       name: larcv
-      file_keys: /sdf/data/neutrino/generic/mpvmpr_2020_01_v04/train.root
+      file_list: /sdf/data/neutrino/generic/mpvmpr_2020_01_v04/train.root
       schema:
         data:
           parser: cluster3d
