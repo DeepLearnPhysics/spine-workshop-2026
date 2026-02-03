@@ -19,7 +19,7 @@ io:
     collate_fn: all
     dataset:
       name: larcv
-      file_keys: /sdf/data/neutrino/public_html/spine_workshop/larcv/generic_small.root
+      file_keys: /global/cfs/cdirs/m5252/dune/spine/workshop/larcv/generic_small.root
       schema:
         data:
           parser: sparse3d
@@ -65,7 +65,7 @@ io:
 # Model configuration
 model:
   name: full_chain
-  weight_path: /sdf/data/neutrino/generic/train/mpvmpr_2020_01_v04/weights/full_chain/default/snapshot-4999.ckpt
+  weight_path: /global/cfs/cdirs/m5252/generic/weights/snapshot-4999.ckpt
   to_numpy: true
 
   network_input:
